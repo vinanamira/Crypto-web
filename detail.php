@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Detail</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .top-bar {
+            background-color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .top-bar .user {
+            font-size: 16px;
+        }
+        .top-bar .menu a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #333;
+        }
+        .top-bar .menu .dashboard {
+            color: #ff4500;
+            font-weight: bold;
+        }
+        .back-button {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .back-button img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        .crypto-detail {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .crypto-logo {
+            width: 100px;
+            height: 100px;
+            margin-right: 15px;
+        }
+        .crypto-detail h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .crypto-detail p {
+            margin: 0;
+            font-size: 16px;
+            color: #666;
+            text-align: justify;
+        }
+        .main-content {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 20px;
+            padding-top: 10px; 
+            padding-bottom: 20px; 
+        }
+        .tradingview-widget-container {
+            width: 100%;
+            max-width: 800px;
+            flex-grow: 1;
+        }
+        .news-container {
+            width: 300px;
+            max-width: 100%;
+            margin-left: 20px;
+            padding: 0;
+            border-radius: 5px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: scroll;
+            height: 600px;
+            position: relative;
+        }
+        .news-container h1 {
+            position: sticky;
+            top: 0;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 10px;
+            z-index: 1;
+        }
+        .news-content {
+            padding: 10px;
+        }
+        .news-article {
+            display: flex;
+            align-items: flex-start;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .news-article:last-child {
+            border-bottom: none;
+        }
+        .news-article img, .news-article .no-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            color: #999999;
+            font-size: 0.8em;
+            text-align: center;
+        }
+        .news-article h2 {
+            margin: 0;
+            font-size: 1em;
+            color: #000000;
+        }
+        .news-article p {
+            margin: 0;
+            font-size: 0.8em;
+            color: #333333;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .text-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .read-more {
+            align-self: flex-end;
+            color: #1e90ff;
+            text-decoration: none;
+            font-size: 0.8em;
+        }
+        .read-more:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="user">Crypto</div>
+        <div class="menu">
+            <a href="dashboard.php">Dashboard</a>
+            <a href="crypto.php" class="dashboard">Watchlist</a>
+            <a href="portofolio.php">Portofolio</a>
+            <a href="pantau.php">Pantau Portofolio</a>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="back-button">
+            <a href="crypto.php">
+                <img src="images/tombol-back.png" alt="Back"> Back
+            </a>
+        </div>
+        <div id="cryptoContainer" class="row">
+            <!-- Cryptocurrency detail will be appended here -->
+        </div>
+        <div class="main-content">
+            <div class="tradingview-widget-container">
+                <div id="tradingview-widget"></div>
+            </div>
+
+            <!-- News Section -->
+            <div class="news-container">
+                <h1>News</h1>
+                <div id="news" class="news-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const apiKey = '9651f979-18a7-4ceb-87ae-699f1548a504';
+            const url = 'https://pro-api.coinmarketcap.com/v2/cryptocurrency/info';
+            const id = new URLSearchParams(window.location.search).get('id');
+
+            const headers = {
+                Accept: 'application/json',
+                'X-CMC_PRO_API_KEY': apiKey
+            };
+
+            const requestUrl = `${url}?id=${id}`;
+
+            fetch(requestUrl, {
+                method: 'GET',
+                headers: headers
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const cryptoContainer = $('#cryptoContainer');
+                const crypto = data.data[id];
+
+                const cryptoElement = `
+                    <div class="col-md-3 text-center">
+                        <img src="${crypto.logo}" alt="${crypto.name}" class="img-fluid crypto-logo"/>
+                    </div>
+                    <div class="col-md-9">
+                        <h3>${crypto.name}</h3>
+                        <p>${crypto.description || 'No description available'}</p>
+                    </div>
+                `;
+                cryptoContainer.append(cryptoElement);
+
+                loadTradingViewWidget(crypto.symbol);
+            })
+            .catch(error => {
+                console.error('Terjadi kesalahan:', error);
+            });
+
+            function loadTradingViewWidget(symbol) {
+                const widgetContainer = document.getElementById('tradingview-widget');
+                widgetContainer.innerHTML = ''; // Clear previous widget
+
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
+                script.async = true;
+                script.innerHTML = JSON.stringify({
+                    "symbols": [[symbol, `BINANCE:${symbol}USDT`]],
+                    "chartOnly": false,
+                    "width": "100%",
+                    "height": "400",
+                    "locale": "en",
+                    "colorTheme": "light",
+                    "autosize": true,
+                    "showVolume": false,
+                    "showMA": false,
+                    "hideDateRanges": false,
+                    "hideMarketStatus": false,
+                    "hideSymbolLogo": false,
+                    "scalePosition": "right",
+                    "scaleMode": "Normal",
+                    "fontFamily": "-apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif",
+                    "fontSize": "10",
+                    "noTimeScale": false,
+                    "valuesTracking": "1",
+                    "changeMode": "price-and-percent",
+                    "chartType": "area",
+                    "maLineColor": "#2962FF",
+                    "maLineWidth": 1,
+                    "maLength": 9,
+                    "lineWidth": 2,
+                    "lineType": 0,
+                    "dateRanges": [
+                        "1d|1",
+                        "1m|30",
+                        "3m|60",
+                        "12m|1D",
+                        "60m|1W",
+                        "all|1M"
+                    ]
+                });
+
+                widgetContainer.appendChild(script);
+            }
+
+            async function fetchCryptoNews() {
+                const apiKey = '8d943d4317d4495db5a4668d1db2469d';
+                const url = `https://newsapi.org/v2/everything?q=bitcoin&searchIn=title,description,content&language=en&sortBy=publishedAt&apiKey=${apiKey}`;
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    displayNews(data.articles);
+                } catch (error) {
+                    console.error('Error fetching news:', error);
+                }
+            }
+
+            function displayNews(articles) {
+                const newsContainer = document.getElementById('news');
+                newsContainer.innerHTML = '';
+                articles.forEach(article => {
+                    const articleDiv = document.createElement('div');
+                    articleDiv.className = 'news-article';
+
+                    const textContainer = document.createElement('div');
+                    textContainer.className = 'text-container';
+
+                    const title = document.createElement('h2');
+                    title.textContent = article.title;
+                    textContainer.appendChild(title);
+
+                    const description = document.createElement('p');
+                    description.textContent = article.description;
+                    textContainer.appendChild(description);
+
+                    const publishedAt = document.createElement('p');
+                    const date = new Date(article.publishedAt);
+                    publishedAt.textContent = `Published at: ${date.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' })}`;
+                    textContainer.appendChild(publishedAt);
+
+                    if (article.url) {
+                        const readMore = document.createElement('a');
+                        readMore.href = article.url;
+                        readMore.textContent = 'Read more';
+                        readMore.target = '_blank';
+                        readMore.className = 'read-more';
+                        textContainer.appendChild(readMore);
+                    }
+
+                    if (article.urlToImage) {
+                        const image = document.createElement('img');
+                        image.src = article.urlToImage;
+                        image.alt = article.title;
+                        articleDiv.appendChild(image);
+                    } else {
+                        const noImage = document.createElement('div');
+                        noImage.className = 'no-image';
+                        noImage.textContent = 'No Image';
+                        articleDiv.appendChild(noImage);
+                    }
+
+                    articleDiv.appendChild(textContainer);
+                    newsContainer.appendChild(articleDiv);
+                });
+            }
+
+            fetchCryptoNews();
+        });
+    </script>
+</body>
+</html>
+ 
