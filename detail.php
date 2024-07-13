@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +13,7 @@
             margin: 0;
             padding: 0;
         }
+
         .top-bar {
             background-color: #ffffff;
             padding: 10px 20px;
@@ -20,28 +22,34 @@
             align-items: center;
             border-bottom: 1px solid #ddd;
         }
+
         .top-bar .user {
             font-size: 16px;
         }
+
         .top-bar .menu a {
             margin-right: 15px;
             text-decoration: none;
             color: #333;
         }
+
         .top-bar .menu .dashboard {
             color: #ff4500;
             font-weight: bold;
         }
+
         .back-button {
             display: flex;
             align-items: center;
             margin: 20px 0;
         }
+
         .back-button img {
             width: 24px;
             height: 24px;
             margin-right: 10px;
         }
+
         .crypto-detail {
             background-color: #fff;
             border: 1px solid #ddd;
@@ -51,33 +59,39 @@
             display: flex;
             align-items: center;
         }
+
         .crypto-logo {
             width: 100px;
             height: 100px;
             margin-right: 15px;
         }
+
         .crypto-detail h3 {
             margin: 0;
             font-size: 24px;
         }
+
         .crypto-detail p {
             margin: 0;
             font-size: 16px;
             color: #666;
             text-align: justify;
         }
+
         .main-content {
             display: flex;
             align-items: flex-start;
             margin-top: 20px;
-            padding-top: 10px; 
-            padding-bottom: 20px; 
+            padding-top: 10px;
+            padding-bottom: 20px;
         }
+
         .tradingview-widget-container {
             width: 100%;
             max-width: 800px;
             flex-grow: 1;
         }
+
         .news-container {
             width: 300px;
             max-width: 100%;
@@ -90,6 +104,7 @@
             height: 600px;
             position: relative;
         }
+
         .news-container h1 {
             position: sticky;
             top: 0;
@@ -98,19 +113,24 @@
             padding: 10px;
             z-index: 1;
         }
+
         .news-content {
             padding: 10px;
         }
+
         .news-article {
             display: flex;
             align-items: flex-start;
             border-bottom: 1px solid #ddd;
             padding: 10px 0;
         }
+
         .news-article:last-child {
             border-bottom: none;
         }
-        .news-article img, .news-article .no-image {
+
+        .news-article img,
+        .news-article .no-image {
             width: 50px;
             height: 50px;
             border-radius: 5px;
@@ -123,11 +143,13 @@
             font-size: 0.8em;
             text-align: center;
         }
+
         .news-article h2 {
             margin: 0;
             font-size: 1em;
             color: #000000;
         }
+
         .news-article p {
             margin: 0;
             font-size: 0.8em;
@@ -138,22 +160,26 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .text-container {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
         }
+
         .read-more {
             align-self: flex-end;
             color: #1e90ff;
             text-decoration: none;
             font-size: 0.8em;
         }
+
         .read-more:hover {
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
     <div class="top-bar">
         <div class="user">Crypto</div>
@@ -190,13 +216,13 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         const config = require('./config');
-        
+
         console.log('API KEY 2:', config.apiKey2);
         console.log('API URL 2:', config.apiUrl2);
         console.log('API KEY 3:', config.apiKey3);
         console.log('API URL 3:', config.apiUrl3);
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             const url = `${config.apiUrl2}`;
             const id = new URLSearchParams(window.location.search).get('id');
 
@@ -208,20 +234,20 @@
             const requestUrl = `${url}?id=${id}`;
 
             fetch(requestUrl, {
-                method: 'GET',
-                headers: headers
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const cryptoContainer = $('#cryptoContainer');
-                const crypto = data.data[id];
+                    method: 'GET',
+                    headers: headers
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const cryptoContainer = $('#cryptoContainer');
+                    const crypto = data.data[id];
 
-                const cryptoElement = `
+                    const cryptoElement = `
                     <div class="col-md-3 text-center">
                         <img src="${crypto.logo}" alt="${crypto.name}" class="img-fluid crypto-logo"/>
                     </div>
@@ -230,13 +256,13 @@
                         <p>${crypto.description || 'No description available'}</p>
                     </div>
                 `;
-                cryptoContainer.append(cryptoElement);
+                    cryptoContainer.append(cryptoElement);
 
-                loadTradingViewWidget(crypto.symbol);
-            })
-            .catch(error => {
-                console.error('Terjadi kesalahan:', error);
-            });
+                    loadTradingViewWidget(crypto.symbol);
+                })
+                .catch(error => {
+                    console.error('Terjadi kesalahan:', error);
+                });
 
             function loadTradingViewWidget(symbol) {
                 const widgetContainer = document.getElementById('tradingview-widget');
@@ -247,7 +273,9 @@
                 script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js';
                 script.async = true;
                 script.innerHTML = JSON.stringify({
-                    "symbols": [[symbol, `BINANCE:${symbol}USDT`]],
+                    "symbols": [
+                        [symbol, `BINANCE:${symbol}USDT`]
+                    ],
                     "chartOnly": false,
                     "width": "100%",
                     "height": "400",
@@ -350,5 +378,5 @@
         });
     </script>
 </body>
+
 </html>
- 

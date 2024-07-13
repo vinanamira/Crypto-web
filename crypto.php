@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,25 +17,30 @@
             margin: 0;
             padding: 0;
         }
+
         /* tampilan untuk container */
         .container {
             margin-top: 30px;
         }
+
         /* tampilan untuk judul */
         h1 {
             color: #343a40;
             text-align: center;
             margin-bottom: 40px;
         }
+
         /* tampilan untuk header table */
         .table thead th {
             background-color: #615EFC;
             color: white;
         }
+
         /* tampilan untuk baris table saat di hover */
         .table tbody tr:hover {
             background-color: #f1f1f1;
         }
+
         /* tampilan untuk topbar */
         .top-bar {
             background-color: #ffffff;
@@ -44,16 +50,19 @@
             align-items: center;
             border-bottom: 1px solid #ddd;
         }
+
         /* tampilan untuk teks user di top bar */
         .top-bar .user {
             font-size: 16px;
         }
+
         /* tampilan untuk menu di topbar */
         .top-bar .menu a {
             margin-right: 15px;
             text-decoration: none;
             color: #333;
         }
+
         /* tampilan khusus untuk link dashboard di menu */
         .top-bar .menu .dashboard {
             color: #ff4500;
@@ -61,6 +70,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- top bar untuk user dan menu navigasi -->
     <div class="top-bar">
@@ -88,13 +98,13 @@
                     <th>1h (%)</th>
                     <th>1d (%)</th>
                     <th>1w (%)</th>
-                    <th>Action</th> 
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
-        <!-- link ke jquery -->
+    <!-- link ke jquery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <!-- link ke datatables js -->
     <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
@@ -106,13 +116,13 @@
         console.log('API Key 1:', config.apiKey1);
         console.log('API URL 1:', config.apiUrl1);
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             // definisi API coinmarketcap
             const url = `${config.apiUrl1}`;
 
             // tetapkan parameter untuk permintaan API
             const parameters = {
-                start: '1',  //memulai dari urutan pertama
+                start: '1', //memulai dari urutan pertama
                 limit: '100', //mengambil data maksimal 100 mata uang crypto
                 convert: 'IDR' //konversi harga ke rupiah
             };
@@ -123,14 +133,14 @@
             };
 
             const qs = new URLSearchParams(parameters).toString(); //konversi parameter ke dalam query string
-                                                                    // awalnya itu dari objek dijadikan string
+            // awalnya itu dari objek dijadikan string
             const requestUrl = `${url}?${qs}`; // membuat iurl lengkap dengan query string, disatuiin url dan qs
 
             // melakukan fetch ke API dengan metode get dan header yg telah ditetapkan
             fetch(requestUrl, {
-                method: 'GET',
-                headers: headers
-            })
+                    method: 'GET',
+                    headers: headers
+                })
                 .then(response => {
                     // mengecek jika respons dari server tidak ok, menampilkan eror
                     if (!response.ok) {
@@ -143,50 +153,63 @@
                     // mengisialisasi datatable dengan data yg didapat dari API
                     const coinTable = $('#coinTable').DataTable({
                         data: data.data, // mengisi table dengan data dari API
-                        columns: [
-                            { data: 'cmc_rank' }, // kolom untuk peringkat CMC
-                            { data: 'name'}, // kolom untuk nama koin
-                            { data: 'symbol' }, //kolom untuk simbol koin
+                        columns: [{
+                                data: 'cmc_rank'
+                            }, // kolom untuk peringkat CMC
+                            {
+                                data: 'name'
+                            }, // kolom untuk nama koin
+                            {
+                                data: 'symbol'
+                            }, //kolom untuk simbol koin
                             {
                                 data: 'quote.IDR.price', // kolom untuk harga dalam rupiah/IDR
-                                render: function (data) {
+                                render: function(data) {
                                     // format volume kedalam format rupiah, datanya dijadikan ke desimal dijadikan ke lokal string
                                     // currency dan idr di konversi ke float untuk desimal
-                                    return parseFloat(data).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+                                    return parseFloat(data).toLocaleString('id-ID', {
+                                        style: 'currency',
+                                        currency: 'IDR'
+                                    });
                                 }
                             },
                             {
                                 data: 'quote.IDR.volume_24h',
-                                render: function (data) {
-                                    return parseFloat(data).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+                                render: function(data) {
+                                    return parseFloat(data).toLocaleString('id-ID', {
+                                        style: 'currency',
+                                        currency: 'IDR'
+                                    });
                                 }
                             },
                             {
                                 data: 'quote.IDR.percent_change_1h',
-                                render: function (data) {
+                                render: function(data) {
                                     return parseFloat(data).toFixed(2) + "%";
                                 }
                             },
                             {
                                 data: 'quote.IDR.percent_change_24h',
-                                render: function (data) {
+                                render: function(data) {
                                     return parseFloat(data).toFixed(2) + "%";
                                 }
                             },
                             {
                                 data: 'quote.IDR.percent_change_7d',
-                                render: function (data) {
+                                render: function(data) {
                                     return parseFloat(data).toFixed(2) + "%";
                                 }
                             },
                             {
                                 data: null,
-                                render: function (data, type, row) {
+                                render: function(data, type, row) {
                                     return `<a href="detail.php?id=${row.id}" class="btn btn-primary">Detail</a>`;
                                 }
                             }
                         ],
-                        order: [[0, 'asc']],
+                        order: [
+                            [0, 'asc']
+                        ],
                         paging: true,
                         pageLength: 50,
                     });
@@ -197,4 +220,5 @@
         });
     </script>
 </body>
+
 </html>
