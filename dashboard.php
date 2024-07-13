@@ -102,8 +102,8 @@
     <script>
         const config = require('./config');
         
-        console.log('API KEY 1':, config.apiKey1);
-        console.log('API URL 1':, config.apiUrl1);
+        console.log('API KEY 1:', config.apiKey1);
+        console.log('API URL 1:', config.apiUrl1);
         
 
         $(document).ready(function () {

@@ -191,10 +191,10 @@
     <script>
         const config = require('./config');
         
-        console.log('API KEY 2':, config.apiKey2);
-        console.log('API URL 2':, config.apiUrl2);
-        console.log('API KEY 3':, config.apiKey3);
-        console.log('API URL 3':, config.apiUrl3);
+        console.log('API KEY 2:', config.apiKey2);
+        console.log('API URL 2:', config.apiUrl2);
+        console.log('API KEY 3:', config.apiKey3);
+        console.log('API URL 3:', config.apiUrl3);
 
         $(document).ready(function () {
             const url = `${config.apiUrl2}`;
