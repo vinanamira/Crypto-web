@@ -65,9 +65,14 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
+        const config = require('./config');
+
+        console.log('API KEY 4:', config.apiKey4);
+        console.log('API URL 4:', config.apiUrl4);
+
         $(document).ready(function() {
-            const apiKey = 'b512a0ea-7a98-4969-8fac-ef0045c466c7';
-            const quoteUrl = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest';
+            const apiKey = `${config.apiKey4}`;
+            const quoteUrl = `${config.apiUrl4}`;
 
             // Fungsi untuk memuat dan menampilkan grafik portofolio
             function loadPortfolio() {

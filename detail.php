@@ -189,14 +189,20 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
+        const config = require('./config');
+        
+        console.log('API KEY 2':, config.apiKey2);
+        console.log('API URL 2':, config.apiUrl2);
+        console.log('API KEY 3':, config.apiKey3);
+        console.log('API URL 3':, config.apiUrl3);
+
         $(document).ready(function () {
-            const apiKey = '9651f979-18a7-4ceb-87ae-699f1548a504';
-            const url = 'https://pro-api.coinmarketcap.com/v2/cryptocurrency/info';
+            const url = `${config.apiUrl2}`;
             const id = new URLSearchParams(window.location.search).get('id');
 
             const headers = {
                 Accept: 'application/json',
-                'X-CMC_PRO_API_KEY': apiKey
+                'X-CMC_PRO_API_KEY': config.apiKey2
             };
 
             const requestUrl = `${url}?id=${id}`;
@@ -280,8 +286,8 @@
             }
 
             async function fetchCryptoNews() {
-                const apiKey = '8d943d4317d4495db5a4668d1db2469d';
-                const url = `https://newsapi.org/v2/everything?q=bitcoin&searchIn=title,description,content&language=en&sortBy=publishedAt&apiKey=${apiKey}`;
+                const apiKey = `${config.apiKey3}`;
+                const url = `${config.apiUrl3}`;
                 try {
                     const response = await fetch(url);
                     const data = await response.json();

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,25 +17,30 @@
             margin: 0;
             padding: 0;
         }
+
         /* tampilan untuk container */
         .container {
             margin-top: 30px;
         }
+
         /* tampilan untuk judul */
         h1 {
             color: #343a40;
             text-align: center;
             margin-bottom: 40px;
         }
+
         /* tampilan untuk header table */
         .table thead th {
             background-color: #615EFC;
             color: white;
         }
+
         /* tampilan untuk baris table saat di hover */
         .table tbody tr:hover {
             background-color: #f1f1f1;
         }
+
         /* tampilan untuk topbar */
         .top-bar {
             background-color: #ffffff;
@@ -44,16 +50,19 @@
             align-items: center;
             border-bottom: 1px solid #ddd;
         }
+
         /* tampilan untuk teks user di top bar */
         .top-bar .user {
             font-size: 16px;
         }
+
         /* tampilan untuk menu di topbar */
         .top-bar .menu a {
             margin-right: 15px;
             text-decoration: none;
             color: #333;
         }
+
         /* tampilan khusus untuk link dashboard di menu */
         .top-bar .menu .dashboard {
             color: #ff4500;
@@ -61,14 +70,15 @@
         }
     </style>
 </head>
+
 <body>
     <!-- top bar untuk user dan menu navigasi -->
     <div class="top-bar">
         <div class="user">Crypto</div>
         <div class="menu">
             <a href="dashboard.php"">Dashboard</a>
-            <a href="crypto.php">Watchlist</a>
-            <a href="portofolio.php"class="dashboard">Portofolio</a>
+            <a href=" crypto.php">Watchlist</a>
+            <a href="portofolio.php" class="dashboard">Portofolio</a>
             <a href="pantau.php">Pantau Portofolio</a>
         </div>
     </div>
@@ -149,16 +159,22 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+        const config = require('./config');
+
+        console.log('API KEY 1:', config.apiKey1);
+        console.log('API URL 1:', config.apiUrl1);
+        console.log('API KEY 4:', config.apiKey4);
+        console.log('API URL 4:', config.apiUrl4);
+
         $(document).ready(function() {
-            const apiKey = '9651f979-18a7-4ceb-87ae-699f1548a504';
-            const listUrl = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
-            const quoteUrl = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest';
+            const listUrl = `${apiUrl1}`;
+            const quoteUrl = `${apiUrl4}`;
 
             // Fungsi untuk memuat dan menampilkan data portofolio
             function loadPortfolio() {
                 // Data portofolio (biasanya dari database)
                 let portfolio = JSON.parse(localStorage.getItem('cryptoPortfolio')) || [
-                    
+
                 ];
 
                 let totalValue = 0;
@@ -167,20 +183,23 @@
 
                 portfolio.forEach(coin => {
                     fetch(`${quoteUrl}?id=${coin.id}&convert=IDR`, {
-                        method: 'GET',
-                        headers: { Accept: 'application/json', 'X-CMC_PRO_API_KEY': apiKey }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        const coinData = data.data[coin.id];
-                        const currentPrice = coinData.quote.IDR.price;
-                        const totalCost = coin.amount * coin.purchasePrice;
-                        const currentValue = coin.amount * currentPrice;
-                        const profitLoss = ((currentValue - totalCost) / totalCost) * 100;
+                            method: 'GET',
+                            headers: {
+                                Accept: 'application/json',
+                                'X-CMC_PRO_API_KEY': config.apiKey1
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            const coinData = data.data[coin.id];
+                            const currentPrice = coinData.quote.IDR.price;
+                            const totalCost = coin.amount * coin.purchasePrice;
+                            const currentValue = coin.amount * currentPrice;
+                            const profitLoss = ((currentValue - totalCost) / totalCost) * 100;
 
-                        totalValue += currentValue;
+                            totalValue += currentValue;
 
-                        const row = `
+                            const row = `
                             <tr data-coin="${coin.symbol}">
                                 <td>${coinData.name} (${coin.symbol})</td>
                                 <td>${coin.amount}</td>
@@ -191,29 +210,35 @@
                                 <td style="color:${profitLoss > 0 ? 'green' : 'red'}">${profitLoss.toFixed(2)}%</td>
                             </tr>
                         `;
-                        $('#portfolioBody').append(row);
-                        $('#filterCoin').append(`<option value="${coin.symbol}">${coin.name} (${coin.symbol})</option>`);
-                        $('#totalValue').text(totalValue.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }));
-                    })
-                    .catch(error => console.error('Error:', error));
+                            $('#portfolioBody').append(row);
+                            $('#filterCoin').append(`<option value="${coin.symbol}">${coin.name} (${coin.symbol})</option>`);
+                            $('#totalValue').text(totalValue.toLocaleString('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR'
+                            }));
+                        })
+                        .catch(error => console.error('Error:', error));
                 });
             }
 
             // Fungsi untuk memuat daftar koin
             function loadCoinList() {
                 fetch(`${listUrl}?start=1&limit=200&convert=IDR`, {
-                    method: 'GET',
-                    headers: { Accept: 'application/json', 'X-CMC_PRO_API_KEY': apiKey }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    $('#coinSelect').empty();
-                    data.data.forEach(coin => {
-                        $('#coinSelect').append(`<option value="${coin.id}" data-symbol="${coin.symbol}" data-name="${coin.name}">${coin.name} (${coin.symbol})</option>`);
-                    });
-                    $('#coinSelect').select2();
-                })
-                .catch(error => console.error('Error:', error));
+                        method: 'GET',
+                        headers: {
+                            Accept: 'application/jFson',
+                            'X-CMC_PRO_API_KEY': config.apiKey4
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        $('#coinSelect').empty();
+                        data.data.forEach(coin => {
+                            $('#coinSelect').append(`<option value="${coin.id}" data-symbol="${coin.symbol}" data-name="${coin.name}">${coin.name} (${coin.symbol})</option>`);
+                        });
+                        $('#coinSelect').select2();
+                    })
+                    .catch(error => console.error('Error:', error));
             }
 
             // Event handler untuk menghitung amount berdasarkan investasi dan harga saat ini
@@ -223,18 +248,21 @@
 
                 if (coinId && investment) {
                     fetch(`${quoteUrl}?id=${coinId}&convert=IDR`, {
-                        method: 'GET',
-                        headers: { Accept: 'application/json', 'X-CMC_PRO_API_KEY': apiKey }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        const currentPrice = data.data[coinId].quote.IDR.price;
-                        const amount = investment / currentPrice;
+                            method: 'GET',
+                            headers: {
+                                Accept: 'application/json',
+                                'X-CMC_PRO_API_KEY': config.apiKey4
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            const currentPrice = data.data[coinId].quote.IDR.price;
+                            const amount = investment / currentPrice;
 
-                        $('#amount').val(amount.toFixed(6));
-                        $('#price').val(currentPrice.toFixed(2));
-                    })
-                    .catch(error => console.error('Error:', error));
+                            $('#amount').val(amount.toFixed(6));
+                            $('#price').val(currentPrice.toFixed(2));
+                        })
+                        .catch(error => console.error('Error:', error));
                 }
             });
 
@@ -248,7 +276,13 @@
                 const price = parseFloat($('#price').val());
 
                 let portfolio = JSON.parse(localStorage.getItem('cryptoPortfolio')) || [];
-                portfolio.push({ id: coinId, symbol: coinSymbol, name: coinName, amount: amount, purchasePrice: price });
+                portfolio.push({
+                    id: coinId,
+                    symbol: coinSymbol,
+                    name: coinName,
+                    amount: amount,
+                    purchasePrice: price
+                });
                 localStorage.setItem('cryptoPortfolio', JSON.stringify(portfolio));
 
                 $('#addAssetModal').modal('hide');
@@ -273,6 +307,5 @@
         });
     </script>
 </body>
+
 </html>
-
-

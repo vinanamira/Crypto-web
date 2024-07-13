@@ -101,9 +101,14 @@
     <script src="https://cdn.datatables.net/1.11.4/js/dataTables.bootstrap4.min.js"></script>
 
     <script>
+        const config = require('./config');
+
+        console.log('API Key 1:', config.apiKey1);
+        console.log('API URL 1:', config.apiUrl1);
+
         $(document).ready(function () {
             // definisi API coinmarketcap
-            const url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
+            const url = `${config.apiUrl1}`;
 
             // tetapkan parameter untuk permintaan API
             const parameters = {
@@ -114,7 +119,7 @@
             // menetapkan header untuk permintaan API
             const headers = {
                 Accept: 'application/json', //menerima respon dalam format json
-                'X-CMC_PRO_API_KEY': 'b512a0ea-7a98-4969-8fac-ef0045c466c7' // API key pribadi
+                'X-CMC_PRO_API_KEY': config.apiKey1 // API key pribadi
             };
 
             const qs = new URLSearchParams(parameters).toString(); //konversi parameter ke dalam query string
