@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantau Portofolio</title>
-    <!-- link ke bootstrap css -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -52,7 +51,6 @@
 </head>
 
 <body>
-    <!-- top bar untuk user dan menu navigasi -->
     <div class="top-bar">
         <div class="user">Crypto</div>
         <div class="menu">
@@ -82,7 +80,6 @@
             const apiKey = `${config.apiKey4}`;
             const quoteUrl = `${config.apiUrl4}`;
 
-            // Fungsi untuk memuat dan menampilkan grafik portofolio
             function loadPortfolio() {
                 let portfolio = JSON.parse(localStorage.getItem('cryptoPortfolio')) || [];
 

@@ -5,12 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coin Market Data</title>
-    <!-- link ke bootstarp css -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- link datatables css -->
     <link href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <style>
-        /* tampilan untuk halaman */
         body {
             background-color: #f8f9fa;
             font-family: Arial, sans-serif;
@@ -18,30 +15,25 @@
             padding: 0;
         }
 
-        /* tampilan untuk container */
         .container {
             margin-top: 30px;
         }
 
-        /* tampilan untuk judul */
         h1 {
             color: #343a40;
             text-align: center;
             margin-bottom: 40px;
         }
 
-        /* tampilan untuk header table */
         .table thead th {
             background-color: #615EFC;
             color: white;
         }
 
-        /* tampilan untuk baris table saat di hover */
         .table tbody tr:hover {
             background-color: #f1f1f1;
         }
 
-        /* tampilan untuk topbar */
         .top-bar {
             background-color: #ffffff;
             padding: 10px 20px;
@@ -51,19 +43,16 @@
             border-bottom: 1px solid #ddd;
         }
 
-        /* tampilan untuk teks user di top bar */
         .top-bar .user {
             font-size: 16px;
         }
 
-        /* tampilan untuk menu di topbar */
-        .top-bar .menu a {
+       .top-bar .menu a {
             margin-right: 15px;
             text-decoration: none;
             color: #333;
         }
 
-        /* tampilan khusus untuk link dashboard di menu */
         .top-bar .menu .dashboard {
             color: #ff4500;
             font-weight: bold;
@@ -72,7 +61,6 @@
 </head>
 
 <body>
-    <!-- top bar untuk user dan menu navigasi -->
     <div class="top-bar">
         <div class="user">Crypto</div>
         <div class="menu">
@@ -117,7 +105,6 @@
         </table>
     </div>
 
-    <!-- Modal for Adding Asset -->
     <div class="modal fade" id="addAssetModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -132,7 +119,6 @@
                         <div class="form-group">
                             <label for="coinSelect">Select Coin:</label>
                             <select id="coinSelect" class="form-control" style="width: 100%">
-                                <!-- Options will be added dynamically -->
                             </select>
                         </div>
                         <div class="form-group">
@@ -170,9 +156,7 @@
             const listUrl = `${apiUrl1}`;
             const quoteUrl = `${apiUrl4}`;
 
-            // Fungsi untuk memuat dan menampilkan data portofolio
             function loadPortfolio() {
-                // Data portofolio (biasanya dari database)
                 let portfolio = JSON.parse(localStorage.getItem('cryptoPortfolio')) || [
 
                 ];
@@ -221,7 +205,6 @@
                 });
             }
 
-            // Fungsi untuk memuat daftar koin
             function loadCoinList() {
                 fetch(`${listUrl}?start=1&limit=200&convert=IDR`, {
                         method: 'GET',
@@ -241,7 +224,6 @@
                     .catch(error => console.error('Error:', error));
             }
 
-            // Event handler untuk menghitung amount berdasarkan investasi dan harga saat ini
             $('#coinSelect, #investment').change(function() {
                 const coinId = $('#coinSelect').val();
                 const investment = parseFloat($('#investment').val());
@@ -266,7 +248,6 @@
                 }
             });
 
-            // Event handler untuk menambah aset
             $('#addAssetForm').submit(function(e) {
                 e.preventDefault();
                 const coinId = $('#coinSelect').val();
@@ -289,7 +270,6 @@
                 loadPortfolio();
             });
 
-            // Event handler untuk memfilter koin
             $('#filterCoin').change(function() {
                 const selectedCoin = $(this).val();
                 if (selectedCoin) {
@@ -300,7 +280,6 @@
                 }
             });
 
-            // Inisialisasi
             $('#coinSelect').select2();
             loadPortfolio();
             loadCoinList();
